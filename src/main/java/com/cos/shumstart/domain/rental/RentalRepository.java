@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RentalRepository extends JpaRepository<Rental, Integer> {
-    List<Rental> findByUserId(int id);
+    List<Rental> findByUserId(int userId);
+    List<Rental> findByUmbrellaId(int umbrellaId);
 
     @Modifying
     @Query("DELETE FROM Rental WHERE user.id = :userId AND umbrella.id = :umbrellaId")

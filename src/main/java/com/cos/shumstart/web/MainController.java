@@ -3,6 +3,7 @@ package com.cos.shumstart.web;
 import com.cos.shumstart.config.auth.PrincipalDetails;
 import com.cos.shumstart.domain.booth.Booth;
 import com.cos.shumstart.domain.rental.Rental;
+import com.cos.shumstart.domain.umbrella.Umbrella;
 import com.cos.shumstart.domain.user.User;
 import com.cos.shumstart.domain.voucher.Voucher;
 import com.cos.shumstart.service.*;
@@ -128,16 +129,24 @@ public class MainController {
 
     @PostMapping("/main/get_complain")//이 메소드를 통해 몇번우산이 신고가 들어왔고 신고내용파악가능....여기서 쓰도록
     @ResponseBody
-    public Map<String,Boolean> get_complain_info(String umbrella_number,@RequestParam(value="checkArr[]") List<String> checkArr){
+    public Map<String,Boolean> get_complain_info(String umbrella_number,@RequestParam(value="checkArr[]") List<String> checkArr, @AuthenticationPrincipal PrincipalDetails principalDetails){
         boolean check;
 
         String reasonString = "";
+
+        Umbrella umbrellaEntity = rentalService.우산정보(Integer.parseInt(umbrella_number));
+        Rental rentalEntity = rentalService.대여정보_우산번호로찾기(Integer.parseInt(umbrella_number));
+        User userEntity = authService.유저정보(rentalEntity.getUser().getId());
 
         for(String reason:checkArr){
             reasonString += (reason + " ");
         }
 
         Map<String,Boolean> json = new HashMap<>();
+
+        if(umbrellaEntity.isRentalState() == true) {
+            reportService.고장신고후반납하기(userEntity.getId(), principalDetails.getBooth().getId());
+        }
 
         reportService.우산고장신고(Integer.parseInt(umbrella_number), reasonString);
 

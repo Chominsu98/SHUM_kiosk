@@ -2,6 +2,8 @@ package com.cos.shumstart.service;
 
 import com.cos.shumstart.domain.Report.Report;
 import com.cos.shumstart.domain.Report.ReportRepository;
+import com.cos.shumstart.domain.booth.Booth;
+import com.cos.shumstart.domain.rental.Rental;
 import com.cos.shumstart.domain.rental.RentalRepository;
 import com.cos.shumstart.domain.umbrella.Umbrella;
 import com.cos.shumstart.domain.umbrella.UmbrellaRepository;
@@ -11,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -36,5 +40,34 @@ public class ReportService {
         umbrellaRepository.updateBrokenState(true, umbrellaId);
 
         return reportRepository.save(report);
+    }
+
+    @Transactional
+    public void 고장신고후반납하기(int userId, int boothId) {
+
+        List<Rental> rentalEntityList = rentalRepository.findByUserId(userId);
+
+        Rental rentalEntity = new Rental();
+
+        for (int i = 0; i < rentalEntityList.size(); i++) {
+            Rental rental = rentalEntityList.get(i);
+            System.out.println(rental.getId());
+
+            if(rental.isActivation() == true) {
+                rentalEntity = rental;
+            }
+        }
+        System.out.println(rentalEntity.getId());
+
+        Umbrella umbrellaEntity = umbrellaRepository.findById(rentalEntity.getUmbrella().getId());
+
+        umbrellaRepository.updateRentalState(false, umbrellaEntity.getId());
+
+        userRepository.updateState(false, userId);
+
+        rentalRepository.updateActivation(false, rentalEntity.getId());
+        rentalRepository.updateReturnDate(LocalDateTime.now(), rentalEntity.getId());
+
+        userRepository.updateLateFeeStack(0, userId);
     }
 }

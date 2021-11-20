@@ -36,11 +36,30 @@ public class RentalService {
         for (int i = 0; i < rentalEntityList.size(); i++) {
             Rental rental = rentalEntityList.get(i);
 
-            if(rental.getActivation() == true) {
+            if(rental.isActivation() == true) {
                 rentalEntity = rental;
             }
         }
         return rentalEntity;
+    }
+
+    public Rental 대여정보_우산번호로찾기(int umbrellaId) {
+        List<Rental> rentalEntityList = rentalRepository.findByUmbrellaId(umbrellaId);
+
+        Rental rentalEntity = new Rental();
+
+        for (int i = 0; i < rentalEntityList.size(); i++) {
+            Rental rental = rentalEntityList.get(i);
+
+            if(rental.isActivation() == true) {
+                rentalEntity = rental;
+            }
+        }
+        return rentalEntity;
+    }
+
+    public Umbrella 우산정보(int umbrellaId) {
+        return umbrellaRepository.findById(umbrellaId);
     }
 
     @Transactional
@@ -133,7 +152,7 @@ public class RentalService {
             Rental rental = rentalEntityList.get(i);
             System.out.println(rental.getId());
 
-            if(rental.getActivation() == true) {
+            if(rental.isActivation() == true) {
                 rentalEntity = rental;
             }
         }
