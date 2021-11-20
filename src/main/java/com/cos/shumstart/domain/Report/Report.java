@@ -20,9 +20,9 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
-    @JoinColumn(name="userId", referencedColumnName = "id")
-    private User user;
+//    @OneToOne
+//    @JoinColumn(name="userId", referencedColumnName = "id")
+//    private User user;
 
     @OneToOne
     @JoinColumn(name="umbrellaId", referencedColumnName = "id")

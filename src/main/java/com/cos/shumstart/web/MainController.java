@@ -24,6 +24,7 @@ public class MainController {
     private final VoucherService voucherService;
     private final AuthService authService;
     private final BoothService boothService;
+    private final ReportService reportService;
 
 
     private String qrcode_number;//큐알코드 정보를 여기다가 넣어놨으니 이걸로 접근해서 서비스 쓰도록,,,
@@ -35,8 +36,8 @@ public class MainController {
 
     //대여,반납-키오스크qr코드 페이지->state는 대여,반납을 나타냄
     @GetMapping("/main/{state}/qrcode")
-    public String qrcode_rent(@PathVariable("state")String state, Model model) {
-        Booth booth=boothService.부스정보(1);
+    public String qrcode_rent(@PathVariable("state")String state, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Booth booth=boothService.부스정보(principalDetails.getBooth().getId());
         model.addAttribute("booth",booth);
         model.addAttribute("state",state);
 
@@ -46,8 +47,8 @@ public class MainController {
 
     //대여,반납-키오스크예약번호 페이지->state는 대여,반납을 나타냄
     @GetMapping("/main/{state}/reservation_code")
-    public String reservation(@PathVariable("state")String state,Model model) {
-        Booth booth=boothService.부스정보(1);
+    public String reservation(@PathVariable("state")String state, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Booth booth=boothService.부스정보(principalDetails.getBooth().getId());
 
         model.addAttribute("booth",booth);
         model.addAttribute("state",state);
@@ -129,14 +130,16 @@ public class MainController {
     @ResponseBody
     public Map<String,Boolean> get_complain_info(String umbrella_number,@RequestParam(value="checkArr[]") List<String> checkArr){
         boolean check;
-        System.out.println("신고할려는 우산정보 보냄..");
 
-        System.out.println("신고할려는 우산번호:"+umbrella_number);
+        String reasonString = "";
+
         for(String reason:checkArr){
-            System.out.println("신고할려는 사유:"+reason);
+            reasonString += (reason + " ");
         }
 
         Map<String,Boolean> json = new HashMap<>();
+
+        reportService.우산고장신고(Integer.parseInt(umbrella_number), reasonString);
 
         try {
             check=true;

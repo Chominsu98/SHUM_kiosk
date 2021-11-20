@@ -22,25 +22,18 @@ public class ReportService {
     private final ReportRepository reportRepository;
 
     @Transactional
-    public Report 우산고장신고(int userId, int umbrellaId, String message) {
-
-        User userEntity = userRepository.findById(userId);
+    public Report 우산고장신고(int umbrellaId, String message) {
 
         Umbrella umbrella = new Umbrella();
         umbrella.setId(umbrellaId);
 
         Report report = new Report();
-        report.setUser(userEntity);
         report.setUmbrella(umbrella);
         report.setMessage(message);
 
         umbrellaRepository.updateBoothIdRental(umbrellaId);
         umbrellaRepository.updateRentalState(false, umbrellaId);
         umbrellaRepository.updateBrokenState(true, umbrellaId);
-
-        userRepository.updateState(false, userId);
-
-        rentalRepository.rentalDelete(userId, umbrellaId);
 
         return reportRepository.save(report);
     }
