@@ -332,12 +332,13 @@
         else if(state=="second_pass_return"){//반납화면에서 반납시간모달창을 보여준다.
             showPopup(true,"#popup_return");
             timer();//타이머함수를 돌려서 시간을 돌려준다
+            send_umbrella_info(document.getElementById("tmp_return_info").innerText)//서버에 반납할려는 우산정보를 보내줌
         }
         else if(state=="return_finish"){//반납완료를 마쳤을때
             document.getElementById("notification1").innerText="✔"+document.getElementById("tmp_return_info").innerText+"번 우산반납이 완료되었습니다.다음에 또 이용해주시기 바랍니다.";
             document.getElementById("close").setAttribute("value","get_back_to_home");
             showPopup(true,"#popup");
-            send_umbrella_info(document.getElementById("tmp_return_info").innerText)//서버에 반납할려는 우산정보를 보내줌
+            //send_umbrella_info(document.getElementById("tmp_return_info").innerText)//서버에 반납할려는 우산정보를 보내줌
         }
         else if(state=="return_fail"){
             window.location="/";
