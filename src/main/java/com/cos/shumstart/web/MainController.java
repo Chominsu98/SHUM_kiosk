@@ -122,7 +122,7 @@ public class MainController {
 
             System.out.println("대여 완료 우산번호:"+umbrella_number);
 
-            SerialPort serialPort = new SerialPort("COM7");
+            SerialPort serialPort = new SerialPort("COM3");
             try {
                 if (serialPort.openPort())
                     serialPort.closePort();
@@ -132,6 +132,7 @@ public class MainController {
                         SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE, false, false);//Set params. Also you can set params by this string: serialPort.setParams(9600, 8, 1, 0);
                 serialPort.writeString(holderEntity.getId() + "0");//Write data to port
+                serialPort.closePort();
             } catch (SerialPortException ex) {
                 System.out.println(ex);
             }
@@ -142,7 +143,7 @@ public class MainController {
 
             rentalService.반납하기(userEntity.getId(), holderEntity.getId(), principalDetails.getBooth().getId());
 
-            SerialPort serialPort = new SerialPort("COM7");
+            SerialPort serialPort = new SerialPort("COM3");
             try {
                 if (serialPort.openPort())
                     serialPort.closePort();
@@ -152,6 +153,7 @@ public class MainController {
                         SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE, false, false);//Set params. Also you can set params by this string: serialPort.setParams(9600, 8, 1, 0);
                 serialPort.writeString(holderEntity.getId() + "0");//Write data to port
+                serialPort.closePort();
             } catch (SerialPortException ex) {
                 System.out.println(ex);
             }
